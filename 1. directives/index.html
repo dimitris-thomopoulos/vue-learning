@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Vue 3 Basics</title>
+
+        <style>
+
+            .box {
+                background-color: purple;
+                height: 200px;
+                width: 200px;
+            }
+
+            .box.two {
+                background-color: red;
+            }
+            image.pngimage.pngimage.png
+            .box.three {
+                background-color: blue;
+            }
+
+            [v-cloak] {
+                display: none; 
+                /*the v-cloak attribute will stay in the respective DOM element until the whole Vue app is laoded, when it will be removed.*/
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div id="app" v-cloak>                   <!--v-cloak is a Vue directive that will hide anything from rendering/showing until the whole Vue app is rendered. Used for preventing cumulative layout shifts lasting milliseconds on page load. -->
+            {{ greeting }}                       <!-- Vue directives are written as attributes inside HTLM elements. They use a v (from Vue) prepended to the directive keyword, in order to dinstict from regular HMTL attributes-->
+            <input v-model="greeting" />         <!-- v-model is a Vue directive that handles two-way data binding, changing content of multiple elements dynamically, at the same time-->
+
+            <hr />
+            
+
+        <!--<div v-if="isVisible" v-show="isVisible" class="box"></div>   v-if is a Vue directive that acts just like an if Statement in JavaScript. If the condition is false, the DOM element in which the v-if directive is located won't be displayed NEITHER RENDERED. -->
+                                                                     <!-- v-show is a Vue directive that is very similar to the v-if directive. If the condition is false, the DOM element in which the v-show directive is located won't be displayed BUT IT WILL STILL BE RENDERED (check inspect element for comparison). Not used so regularly, mostly used for cases where we need to toggle something more frequently. -->
+            
+            
+            <div v-if="isVisible" class="box"></div>
+            <div v-else-if="isVisible2" class="box two"></div>
+            <div v-else class="box three"></div>
+            
+        </div>
+
+        <script src="https://unpkg.com/vue@3"></script>
+        <script>
+            let app = Vue.createApp({
+                data: function() {
+                    return {
+                        greeting: 'Hello Vue 3!',
+                        isVisible: false,
+                        isVisible2: true
+                    }
+                }
+            })
+            app.mount('#app')
+        </script>
+
+    </body>
+</html>
