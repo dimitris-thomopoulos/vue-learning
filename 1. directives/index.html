@@ -33,7 +33,7 @@
 
         <div id="app" v-cloak>                   <!--v-cloak is a Vue directive that will hide anything from rendering/showing until the whole Vue app is rendered. Used for preventing cumulative layout shifts lasting milliseconds on page load. -->
             {{ greeting }}                       <!-- Vue directives are written as attributes inside HTLM elements. They use a v (from Vue) prepended to the directive keyword, in order to dinstict from regular HMTL attributes-->
-            <input v-model="greeting" />         <!-- v-model is a Vue directive that handles two-way data binding, changing content of multiple elements dynamically, at the same time-->
+            <input v-model="greeting" />         <!-- v-model is a Vue directive that handles two-way data binding, changing the content of two elements dynamically, at the same time-->
 
             <hr />
             
@@ -48,7 +48,7 @@
             
         </div>
 
-        <script src="https://unpkg.com/vue@3"></script>
+        <script src="https://unpkg.com/vue@3"></script>    <!-- in this line we import the VueJS framework into our project -->
         <script>
             let app = Vue.createApp({
                 data: function() {
@@ -61,6 +61,35 @@
             })
             app.mount('#app')
         </script>
+
+
+    <!-- 
+
+    Remember:
+
+    <input v-model="something">
+    is essentially the same as:
+
+    <input
+       v-bind:value="something"
+       v-on:input="something = $event.target.value"
+    >
+    or (shorthand syntax):
+
+    <input
+       :value="something"
+       @input="something = $event.target.value"
+    >
+    
+    So v-model is a two-way binding for form inputs. It combines v-bind, which brings a js value into the markup and v-on:input to update the js value. The js value must be present in your data, or in an inject.
+
+    Use v-model when you can. Use v-bind/v-on when you must :-) I hope your answer was accepted.
+
+    v-model works with all the basic HTML input types (text, textarea, number, radio, checkbox, select). You can use v-model with input type=date if your model stores dates as ISO strings (yyyy-mm-dd). If you want to use date objects in your model (a good idea as soon as you're going to manipulate or format them), do this.
+
+    v-model has some extra smarts that it's good to be aware of. If you're using an IME ( lots of mobile keyboards, or Chinese/Japanese/Korean ), v-model will not update until a word is complete (a space is entered or the user leaves the field). v-input will fire much more frequently.
+
+    v-model also has modifiers .lazy, .trim, .number, covered in the doc. -->
 
     </body>
 </html>

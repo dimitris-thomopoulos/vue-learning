@@ -62,15 +62,21 @@
                     <form @submit.prevent="handleSubmit">
                         <h1>{{ title }}</h1>
 
-                        <!-- notice how we replaced our previously default HTML inputs with our custom inputs created in the 'custom-input' in the VueJS component below-->
+                        <!-- 3. notice how we replaced our previously default HTML inputs with our custom inputs created in the 'custom-input' in the VueJS component below-->
 
-                        <custom-input type="email" v-model="email" />
-                        <custom-input type="password" v-model="password"/> 
+                        <!-- 4. the 'v-bind:' directive turns a regular HTML attribute into something that can be parsed as JavaScript -->
+                        <!-- 5. here, we use the 'label' attribute, which we'll bind to the JavaScript variable -->
+
+                        <custom-input v-model="email" :modelValue="email" v-bind:label="emailLabel" />
+
+                        <!-- 6. we can also use the shorthand syntax for 'v-bind:', which is a single colon (:) followed by the name of the JavaScript variable that we want to bind -->
+                        <custom-input v-model="password" :modelValue="password" :label="passwordLabel" />
+
                         <button>Log in</button>
                     </form>
                 `,
 
-                // when using other external custom components inside another component, we need to register them.
+                // 2. when using other external custom components inside another component, we need to register them.
                 // we let our 'login=form' component know about the other custom component we used inside it, named 'custom-input':
                 components: ['custom-input'],
 
@@ -78,7 +84,11 @@
                     return {
                         title: 'Login Form',
                         email: '',
-                        password: ''
+                        password: '',
+
+                        // 9. we define the 'label' attribute's properties on the parent component of 'custom-input', which is 'login-form'.
+                        emailLabel: 'Email',
+                        passwordLabel: 'Password'
                     }
                 },
                 methods: {
@@ -89,15 +99,54 @@
             })
 
 
-            // we create a new component especially for the form's inputs:
+            // 1. we create a new component especially for the form's inputs:
 
             app.component('custom-input', {
                 template: `
                     <label>
+
+                        <!-- 7. in order to display the 'label' variable, we could either define it under the data() function/object, 
+                            but in this case we are learning component props. Thus, we will define the 'label' keyword inside the props object below, which saves the name of the 'label' attribute that we added in the 'login-form' component's template above. -->
+
                         {{ label }}
-                        <input type="text">
+
+                        <!-- 10. we added a 'v-model' directive to the inputs, so that we can listen to changes to the text in the inputs. -->
+                        <!-- with v-model, anytime we type a character into these inputs, VueJS is going to update the 'inputValue' variable's value with the input's content. -->
+
+                        <input type="text" v-model="inputValue">
                     </label>
-                `
+                `,
+                
+                // 8. the 'props' object is a list of all of the names of the information that we are passing down from the parent component to this child component.
+                // the props that we pass to children components are immutable. We cannot change them in the child component, they can only be changed in the parent component. Props are read-only.
+                props: ['label',
+                // 12. we also accept a prop called 'modelValue', which comes from the parent component. Check lines 70 and 73, where we v-model the child component. We have access to the 'modelValue' prop because we are v-modelling the input in line 116 to a getter function in line 132, which sets the value as 'this.modelValue', which comes from the v-modelled variable in the parent component in lines 70 and 73, which come from the variables in lines 86 and 87.
+                'modelValue'],
+
+                
+                // 11. we create a new object called 'computed'. This is an object where we can put variable names as keys
+
+                computed: {
+                    inputValue: {
+                        // the value we need to put in our getter function is a value we get from the parent component.
+                        get() {
+                            return this.modelValue
+                        },
+                        // 13. we give the set() function any parameter name we want, we'll just call it 'value'
+                        set (value) {                            
+                            // 14. emit allows us to emit events that other components can listen to, so that we can pass data around our Vue app this way.
+                            // we can emit our custom-made events or any pre-made events given by VueJS. Here, we will emit an event that Vue gives us and is called Update Event.
+                            // the first  argument is the type of event we are emitting and the second argument is the value that we are passing through that event.
+                            this.$emit('update:modelValue', value)
+                        }
+                    }
+                }
+
+                // data() {
+                //     return {
+                //         inputValue: ''
+                //     }
+                // }
             })
 
             app.mount('#app')
